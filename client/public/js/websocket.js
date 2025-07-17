@@ -220,7 +220,7 @@ function updateGameCard(game) {
     }
 
     // 如果当前在游戏房间页面且是当前游戏，则刷新房间
-    if (window.location.pathname.endsWith('room.html') && getUrlParam('game_id') === String(game.id)) {
+    if (window.location.pathname.endsWith('room.html') && getUrlParam('gameId') === String(game.id)) {
         loadRoomData(game.id);
     }
 }
@@ -233,7 +233,7 @@ function removeGameCard(gameId) {
     }
 
     // 如果当前在游戏房间页面且是当前游戏，则重定向到大厅
-    if (window.location.pathname.endsWith('room.html') && getUrlParam('game_id') === String(gameId)) {
+    if (window.location.pathname.endsWith('room.html') && getUrlParam('gameId') === String(gameId)) {
         showNotification('房间已解散', 'error');
         setTimeout(() => {
             window.location.href = 'lobby.html';
@@ -270,7 +270,7 @@ async function joinGame(gameId) {
 
         showNotification('成功加入游戏', 'success');
         setTimeout(() => {
-            window.location.href = `room.html?game_id=${gameId}`;
+            window.location.href = `room.html?gameId=${gameId}`;
         }, 1000);
     } catch (error) {
         showNotification(error.message, 'error');

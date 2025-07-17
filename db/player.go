@@ -21,12 +21,12 @@ type Player struct {
 	Username     string    `json:"username"` // 主键唯一
 	Password     string    `json:"password"`
 	Role         Role      `json:"role"`
-	Wins         int32     `json:"wins"`          // 胜场
-	Losses       int32     `json:"losses"`        // 负场
-	PositionCard int32     `json:"position_card"` // 位置卡数量
-	Dice         int32     `json:"dice"`          // 骰子数量
-	CurGameId    int32     `json:"cur_game_id"`   // 当前游戏ID, 0表示未在游戏中
-	CreatedAt    time.Time `json:"created_at"`
+	Wins         int32     `json:"wins"`         // 胜场
+	Losses       int32     `json:"losses"`       // 负场
+	PositionCard int32     `json:"positionCard"` // 位置卡数量
+	Dice         int32     `json:"dice"`         // 骰子数量
+	CurGameId    int32     `json:"curGameId"`    // 当前游戏Id, 0表示未在游戏中
+	CreatedAt    time.Time `json:"createdAt"`
 }
 
 func LoadAllPlayers() (map[int32]*Player, error) {

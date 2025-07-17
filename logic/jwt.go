@@ -12,14 +12,14 @@ var (
 )
 
 type Claims struct {
-	PlayerID int32 `json:"playerId"`
+	PlayerId int32 `json:"playerId"`
 	jwt.RegisteredClaims
 }
 
-func GenerateJWT(playerID int32) (string, error) {
+func GenerateJWT(playerId int32) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &Claims{
-		PlayerID: playerID,
+		PlayerId: playerId,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},

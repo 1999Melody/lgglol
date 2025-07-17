@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // 跳转到房间页面
                 setTimeout(() => {
-                    window.location.href = `room.html?game_id=${game.id}`;
+                    window.location.href = `room.html?gameId=${game.id}`;
                 }, 1000);
             } catch (error) {
                 showNotification(error.message, 'error');
@@ -241,7 +241,7 @@ async function joinGame(gameId) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                game_Id: parseInt(gameId)
+                gameId: parseInt(gameId)
             })
         });
 
@@ -252,7 +252,7 @@ async function joinGame(gameId) {
 
         showNotification('成功加入游戏', 'success');
         setTimeout(() => {
-            window.location.href = `room.html?game_id=${gameId}`;
+            window.location.href = `room.html?gameId=${gameId}`;
         }, 1000);
     } catch (error) {
         showNotification(error.message, 'error');

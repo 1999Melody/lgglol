@@ -8,11 +8,11 @@ import (
 	"time"
 )
 
-func (g *Global) CreateGame(creatorID int32, name string) (*db.Game, error) {
+func (g *Global) CreateGame(creatorId int32, name string) (*db.Game, error) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
-	creator, ok := g.Players[creatorID]
+	creator, ok := g.Players[creatorId]
 	if !ok {
 		return nil, ErrPlayerNotFound
 	}
@@ -25,25 +25,25 @@ func (g *Global) CreateGame(creatorID int32, name string) (*db.Game, error) {
 		return nil, ErrPlayerInGame
 	}
 
-	newID, err := db.GetNextID("game_id")
+	newId, err := db.GetNextId("gameId")
 	if err != nil {
 		return nil, err
 	}
 	game := &db.Game{
-		Id:        newID,
+		Id:        newId,
 		Name:      name,
-		Creator:   creatorID,
+		Creator:   creatorId,
 		Players:   []*db.TeamPlayer{},
 		Status:    db.GameWaiting,
 		CreatedAt: time.Now(),
 	}
 	game.Players = append(game.Players, &db.TeamPlayer{
-		Id:   creatorID,
+		Id:   creatorId,
 		Name: creator.Username,
 	})
 
-	g.Games[newID] = game
-	creator.CurGameId = newID
+	g.Games[newId] = game
+	creator.CurGameId = newId
 
 	g.innerPlayerChange(creator)
 	g.innerGameChange(game)
@@ -64,16 +64,16 @@ func (g *Global) GetAllGames() []*db.Game {
 	return games
 }
 
-func (g *Global) JoinGame(playerID, gameID int32) error {
+func (g *Global) JoinGame(playerId, gameId int32) error {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
-	player, ok := g.Players[playerID]
+	player, ok := g.Players[playerId]
 	if !ok {
 		return ErrPlayerNotFound
 	}
 
-	if player.CurGameId == gameID {
+	if player.CurGameId == gameId {
 		return nil // already in the game
 	}
 
@@ -81,7 +81,7 @@ func (g *Global) JoinGame(playerID, gameID int32) error {
 		return ErrPlayerInGame
 	}
 
-	game, ok := g.Games[gameID]
+	game, ok := g.Games[gameId]
 	if !ok {
 		return ErrGameNotFound
 	}
@@ -96,21 +96,21 @@ func (g *Global) JoinGame(playerID, gameID int32) error {
 
 	// Add player to game
 	game.Players = append(game.Players, &db.TeamPlayer{
-		Id:   playerID,
+		Id:   playerId,
 		Name: player.Username,
 	})
-	player.CurGameId = gameID
+	player.CurGameId = gameId
 
 	g.innerPlayerChange(player)
 	g.innerGameChange(game)
 	return nil
 }
 
-func (g *Global) LeaveGame(playerID int32) error {
+func (g *Global) LeaveGame(playerId int32) error {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
-	player, ok := g.Players[playerID]
+	player, ok := g.Players[playerId]
 	if !ok {
 		return ErrPlayerNotFound
 	}
@@ -131,7 +131,7 @@ func (g *Global) LeaveGame(playerID int32) error {
 	}
 
 	// Remove player from game
-	game.Players = removePlayerFromSlice(game.Players, playerID)
+	game.Players = removePlayerFromSlice(game.Players, playerId)
 	player.CurGameId = 0
 
 	g.innerPlayerChange(player)
@@ -142,7 +142,7 @@ func (g *Global) LeaveGame(playerID int32) error {
 		return nil
 	}
 
-	if game.Creator == playerID {
+	if game.Creator == playerId {
 		game.Creator = game.Players[0].Id
 	}
 
@@ -150,7 +150,7 @@ func (g *Global) LeaveGame(playerID int32) error {
 	return nil
 }
 
-//func (g *Global) DeleteGame(operatorId, gameID int32) error {
+//func (g *Global) DeleteGame(operatorId, gameId int32) error {
 //	g.mu.Lock()
 //	defer g.mu.Unlock()
 //
@@ -159,7 +159,7 @@ func (g *Global) LeaveGame(playerID int32) error {
 //		return ErrPlayerNotFound
 //	}
 //
-//	game, ok := g.Games[gameID]
+//	game, ok := g.Games[gameId]
 //	if !ok {
 //		return ErrGameNotFound
 //	}
@@ -180,16 +180,16 @@ func (g *Global) LeaveGame(playerID int32) error {
 //
 //	g.innerPlayersChange(players)
 //
-//	delete(g.Games, gameID)
-//	g.innerGameDel(gameID)
+//	delete(g.Games, gameId)
+//	g.innerGameDel(gameId)
 //	return nil
 //}
 
-func (g *Global) UsePositionCard(playerID int32, position db.Position) error {
+func (g *Global) UsePositionCard(playerId int32, position db.Position) error {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
-	player, ok := g.Players[playerID]
+	player, ok := g.Players[playerId]
 	if !ok {
 		return ErrPlayerNotFound
 	}
@@ -231,7 +231,7 @@ func (g *Global) UsePositionCard(playerID int32, position db.Position) error {
 	// Find player in game
 	var teamPlayer *db.TeamPlayer
 	for _, p := range game.Players {
-		if p.Id == playerID {
+		if p.Id == playerId {
 			teamPlayer = p
 			break
 		}
@@ -249,7 +249,7 @@ func (g *Global) UsePositionCard(playerID int32, position db.Position) error {
 	return nil
 }
 
-func (g *Global) RollTeams(operatorId, gameID int32) error {
+func (g *Global) RollTeams(operatorId, gameId int32) error {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
@@ -258,7 +258,7 @@ func (g *Global) RollTeams(operatorId, gameID int32) error {
 		return ErrPlayerNotFound
 	}
 
-	game, ok := g.Games[gameID]
+	game, ok := g.Games[gameId]
 	if !ok {
 		return ErrGameNotFound
 	}
@@ -356,11 +356,11 @@ func (g *Global) RollTeams(operatorId, gameID int32) error {
 	return nil
 }
 
-func (g *Global) ReRollHero(playerID int32) error {
+func (g *Global) ReRollHero(playerId int32) error {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
-	player, ok := g.Players[playerID]
+	player, ok := g.Players[playerId]
 	if !ok {
 		return ErrPlayerNotFound
 	}
@@ -387,7 +387,7 @@ func (g *Global) ReRollHero(playerID int32) error {
 	// Find player in game
 	var teamPlayer *db.TeamPlayer
 	for _, p := range game.Players {
-		if p.Id == playerID {
+		if p.Id == playerId {
 			teamPlayer = p
 			break
 		}
@@ -421,7 +421,7 @@ func (g *Global) ReRollHero(playerID int32) error {
 	return nil
 }
 
-func (g *Global) StartGame(playerId, gameID int32) error {
+func (g *Global) StartGame(playerId, gameId int32) error {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
@@ -430,7 +430,7 @@ func (g *Global) StartGame(playerId, gameID int32) error {
 		return ErrPlayerNotFound
 	}
 
-	game, ok := g.Games[gameID]
+	game, ok := g.Games[gameId]
 	if !ok {
 		return ErrGameNotFound
 	}
@@ -455,7 +455,7 @@ func (g *Global) StartGame(playerId, gameID int32) error {
 	return nil
 }
 
-func (g *Global) EndGame(operatorId, gameID int32, winner int32) error {
+func (g *Global) EndGame(operatorId, gameId int32, winner int32) error {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
@@ -464,7 +464,7 @@ func (g *Global) EndGame(operatorId, gameID int32, winner int32) error {
 		return ErrPlayerNotFound
 	}
 
-	game, ok := g.Games[gameID]
+	game, ok := g.Games[gameId]
 	if !ok {
 		return ErrGameNotFound
 	}
@@ -505,9 +505,9 @@ func (g *Global) EndGame(operatorId, gameID int32, winner int32) error {
 }
 
 // Helper functions
-func removePlayerFromSlice(slice []*db.TeamPlayer, playerID int32) []*db.TeamPlayer {
+func removePlayerFromSlice(slice []*db.TeamPlayer, playerId int32) []*db.TeamPlayer {
 	for i, player := range slice {
-		if player.Id == playerID {
+		if player.Id == playerId {
 			return append(slice[:i], slice[i+1:]...)
 		}
 	}

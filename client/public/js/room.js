@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!isLoggedIn()) return;
 
     // 获取游戏ID
-    const gameId = getUrlParam('game_id');
+    const gameId = getUrlParam('gameId');
     if (!gameId) {
         showNotification('无效的房间ID', 'error');
         setTimeout(() => {
@@ -87,7 +87,7 @@ function renderRoom(game) {
             <div class="room-meta">
                 <span><i class="fas fa-crown"></i> 房主: ${creatorName}</span>
                 <span><i class="fas fa-users"></i> 人数: ${game.players.length}/10</span>
-                <span><i class="fas fa-clock"></i> 创建时间: ${formatDate(game.created_at)}</span>
+                <span><i class="fas fa-clock"></i> 创建时间: ${formatDate(game.createdAt)}</span>
             </div>
         </div>
         
@@ -358,7 +358,7 @@ function showPositionCardModal() {
     const user = JSON.parse(localStorage.getItem('user'));
     const modal = document.getElementById('positionCardModal');
 
-    document.getElementById('positionCardCount').textContent = user.position_card;
+    document.getElementById('positionCardCount').textContent = user.positionCard;
 
     // 位置按钮事件
     const positionBtns = document.querySelectorAll('.position-btn');
@@ -391,7 +391,7 @@ function showPositionCardModal() {
                 localStorage.setItem('user', JSON.stringify(updatedUser));
 
                 // 重新加载房间数据
-                const gameId = getUrlParam('game_id');
+                const gameId = getUrlParam('gameId');
                 loadRoomData(gameId);
             } catch (error) {
                 showNotification(error.message, 'error');
@@ -450,7 +450,7 @@ function showRerollModal(playerId, currentHero) {
             localStorage.setItem('user', JSON.stringify(updatedUser));
 
             // 重新加载房间数据
-            const gameId = getUrlParam('game_id');
+            const gameId = getUrlParam('gameId');
             loadRoomData(gameId);
         } catch (error) {
             showNotification(error.message, 'error');

@@ -42,12 +42,12 @@ func (g *Global) Register(username, password string) (*db.Player, error) {
 	}
 
 	// 创建新玩家
-	newID, err := db.GetNextID("player_id")
+	newId, err := db.GetNextId("playerId")
 	if err != nil {
 		return nil, err
 	}
 	player := &db.Player{
-		Id:           newID,
+		Id:           newId,
 		Username:     username,
 		Password:     string(hashedPassword),
 		Role:         db.RoleUser,
@@ -56,7 +56,7 @@ func (g *Global) Register(username, password string) (*db.Player, error) {
 		CreatedAt:    time.Now(),
 	}
 
-	g.Players[newID] = player
+	g.Players[newId] = player
 	db.SavePlayer(player)
 
 	return player, nil
@@ -78,11 +78,11 @@ func (g *Global) Login(username, password string) (*db.Player, error) {
 	return nil, ErrPlayerNotFound
 }
 
-func (g *Global) ChangeRole(requesterID, targetID int32, role db.Role) error {
+func (g *Global) ChangeRole(requesterId, targetId int32, role db.Role) error {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
-	requester, ok := g.Players[requesterID]
+	requester, ok := g.Players[requesterId]
 	if !ok {
 		return ErrPlayerNotFound
 	}
@@ -91,7 +91,7 @@ func (g *Global) ChangeRole(requesterID, targetID int32, role db.Role) error {
 		return ErrPermissionDenied
 	}
 
-	target, ok := g.Players[targetID]
+	target, ok := g.Players[targetId]
 	if !ok {
 		return ErrPlayerNotFound
 	}

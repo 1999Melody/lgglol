@@ -21,7 +21,7 @@ type Client struct {
 	conn        *websocket.Conn
 	mu          sync.Mutex
 	closeChan   chan struct{}
-	playerID    int32
+	playerId    int32
 	lastActive  time.Time
 	isConnected bool
 }
@@ -32,24 +32,24 @@ type Message struct {
 }
 
 // 添加WebSocket客户端
-func (g *Global) AddClient(playerID int32, conn *websocket.Conn) {
+func (g *Global) AddClient(playerId int32, conn *websocket.Conn) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
 	// 关闭现有连接（如果存在）
-	if oldClient, ok := g.clients[playerID]; ok {
+	if oldClient, ok := g.clients[playerId]; ok {
 		oldClient.Close()
 	}
 
 	client := &Client{
 		conn:        conn,
-		playerID:    playerID,
+		playerId:    playerId,
 		closeChan:   make(chan struct{}),
 		lastActive:  time.Now(),
 		isConnected: true,
 	}
 
-	g.clients[playerID] = client
+	g.clients[playerId] = client
 
 	// 启动心跳和消息处理协程
 	go client.handleConnection(g)
@@ -85,7 +85,7 @@ func (c *Client) handleConnection(g *Global) {
 		select {
 		case <-heartbeatTicker.C:
 			if !c.sendHeartbeat() {
-				log.Printf("Heartbeat failed for player %d", c.playerID)
+				log.Printf("Heartbeat failed for player %d", c.playerId)
 				return
 			}
 
@@ -114,7 +114,7 @@ func (c *Client) sendHeartbeat() bool {
 		Data: time.Now().Unix(),
 	})
 	if err != nil {
-		log.Printf("Failed to send heartbeat to player %d: %v", c.playerID, err)
+		log.Printf("Failed to send heartbeat to player %d: %v", c.playerId, err)
 		return false
 	}
 
@@ -132,7 +132,7 @@ func (c *Client) readPump(g *Global, done chan struct{}) {
 		_, message, err := c.conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("WebSocket read error for player %d: %v", c.playerID, err)
+				log.Printf("WebSocket read error for player %d: %v", c.playerId, err)
 			}
 			return
 		}
@@ -152,13 +152,13 @@ func (c *Client) readPump(g *Global, done chan struct{}) {
 }
 
 // 移除WebSocket客户端
-func (g *Global) RemoveClient(playerID int32) {
+func (g *Global) RemoveClient(playerId int32) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
-	if client, ok := g.clients[playerID]; ok {
+	if client, ok := g.clients[playerId]; ok {
 		client.Close()
-		delete(g.clients, playerID)
+		delete(g.clients, playerId)
 	}
 }
 
@@ -190,7 +190,7 @@ func (c *Client) sendMessage(msg Message) bool {
 	c.conn.SetWriteDeadline(time.Now().Add(writeTimeout))
 	err := c.conn.WriteJSON(msg)
 	if err != nil {
-		log.Printf("Failed to send message to player %d: %v", c.playerID, err)
+		log.Printf("Failed to send message to player %d: %v", c.playerId, err)
 		return false
 	}
 	return true
@@ -205,9 +205,9 @@ func (g *Global) Broadcast(msgType string, data interface{}) {
 }
 
 // 发送消息给特定玩家
-func (g *Global) SendToPlayer(playerID int32, msgType string, data interface{}) {
+func (g *Global) SendToPlayer(playerId int32, msgType string, data interface{}) {
 	g.mu.RLock()
-	client, ok := g.clients[playerID]
+	client, ok := g.clients[playerId]
 	g.mu.RUnlock()
 
 	if !ok {

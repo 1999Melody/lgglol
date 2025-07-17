@@ -114,7 +114,7 @@ function renderLeaderboard(players) {
     // 位置卡榜
     const positionTable = document.getElementById('positionTable');
     if (positionTable) {
-        const sortedByPositionCards = [...players].sort((a, b) => b.position_card - a.position_card || b.dice - a.dice);
+        const sortedByPositionCards = [...players].sort((a, b) => b.positionCard - a.positionCard || b.dice - a.dice);
 
         positionTable.innerHTML = sortedByPositionCards.map((player, index) => {
             return `
@@ -127,7 +127,7 @@ function renderLeaderboard(players) {
                             <div class="player-role role-${player.role}">${player.role === 'root' ? '超级管理员' : player.role === 'admin' ? '管理员' : '玩家'}</div>
                         </div>
                     </div>
-                    <div class="stats">${player.position_card}</div>
+                    <div class="stats">${player.positionCard}</div>
                     <div class="winrate">${player.dice}</div>
                 </div>
             `;
@@ -169,7 +169,7 @@ function renderCurrentPlayerCard(players) {
                         <div class="label">胜率</div>
                     </div>
                     <div class="current-player-stat">
-                        <div class="value">${currentPlayer.position_card}</div>
+                        <div class="value">${currentPlayer.positionCard}</div>
                         <div class="label">位置卡</div>
                     </div>
                     <div class="current-player-stat">

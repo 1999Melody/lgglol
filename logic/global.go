@@ -8,8 +8,8 @@ import (
 )
 
 type Global struct {
-	Players   map[int32]*db.Player // 玩家列表, key为玩家ID
-	Games     map[int32]*db.Game   // 游戏列表, key为游戏ID
+	Players   map[int32]*db.Player // 玩家列表, key为玩家Id
+	Games     map[int32]*db.Game   // 游戏列表, key为游戏Id
 	mu        sync.RWMutex
 	clients   map[int32]*Client
 	broadcast chan Message

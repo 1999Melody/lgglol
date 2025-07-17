@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func GetNextID(name string) (int32, error) {
+func GetNextId(name string) (int32, error) {
 	filter := bson.M{"id": name}
 	update := bson.M{"$inc": bson.M{"seq": 1}}
 	opts := options.FindOneAndUpdate().SetUpsert(true).SetReturnDocument(options.After)
@@ -22,7 +22,7 @@ func GetNextID(name string) (int32, error) {
 		opts,
 	).Decode(&result)
 	if err != nil {
-		log.Printf("Failed to get next ID for %s: %v", name, err)
+		log.Printf("Failed to get next Id for %s: %v", name, err)
 		return 0, err
 	}
 	return result.Seq, nil

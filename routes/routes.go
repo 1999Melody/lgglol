@@ -76,9 +76,9 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 	player.Use(AuthMiddleware(g))
 	{
 		player.POST("/change_role", func(c *gin.Context) {
-			playerID := c.GetInt64("playerID")
+			playerId := c.GetInt64("playerId")
 			var req struct {
-				TargetID int32   `json:"target_id"`
+				TargetId int32   `json:"targetId"`
 				Role     db.Role `json:"role"`
 			}
 			if err := c.ShouldBindJSON(&req); err != nil {
@@ -86,7 +86,7 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 				return
 			}
 
-			if err := g.ChangeRole(int32(playerID), req.TargetID, req.Role); err != nil {
+			if err := g.ChangeRole(int32(playerId), req.TargetId, req.Role); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
@@ -105,7 +105,7 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 	game.Use(AuthMiddleware(g))
 	{
 		game.POST("/create", func(c *gin.Context) {
-			playerID := c.GetInt64("playerID")
+			playerId := c.GetInt64("playerId")
 			var req struct {
 				Name string `json:"name"`
 			}
@@ -114,7 +114,7 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 				return
 			}
 
-			game, err := g.CreateGame(int32(playerID), req.Name)
+			game, err := g.CreateGame(int32(playerId), req.Name)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
@@ -124,17 +124,17 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 
 		})
 		game.POST("/join", func(c *gin.Context) {
-			playerID := c.GetInt64("playerID")
+			playerId := c.GetInt64("playerId")
 
 			var req struct {
-				GameId int32 `json:"game_Id"`
+				GameId int32 `json:"gameId"`
 			}
 			if err := c.ShouldBindJSON(&req); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
 
-			if err := g.JoinGame(int32(playerID), req.GameId); err != nil {
+			if err := g.JoinGame(int32(playerId), req.GameId); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
@@ -142,9 +142,9 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 			c.JSON(http.StatusOK, gin.H{"message": "joined game successfully"})
 		})
 		game.POST("/leave", func(c *gin.Context) {
-			playerID := c.GetInt64("playerID")
+			playerId := c.GetInt64("playerId")
 
-			if err := g.LeaveGame(int32(playerID)); err != nil {
+			if err := g.LeaveGame(int32(playerId)); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
@@ -152,7 +152,7 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 			c.JSON(http.StatusOK, gin.H{"message": "left game successfully"})
 		})
 		//game.DELETE("/delete", func(c *gin.Context) {
-		//	playerID := c.GetInt64("playerID")
+		//	playerId := c.GetInt64("playerId")
 		//
 		//	var req struct {
 		//		GameId int32 `json:"gameId"`
@@ -162,7 +162,7 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 		//		return
 		//	}
 		//
-		//	if err := g.DeleteGame(int32(playerID), req.GameId); err != nil {
+		//	if err := g.DeleteGame(int32(playerId), req.GameId); err != nil {
 		//		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		//		return
 		//	}
@@ -171,7 +171,7 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 		//})
 		// 使用位置卡
 		game.POST("/use_position", func(c *gin.Context) {
-			playerID := c.GetInt64("playerID")
+			playerId := c.GetInt64("playerId")
 			var req struct {
 				Position db.Position `json:"position"`
 			}
@@ -180,7 +180,7 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 				return
 			}
 
-			if err := g.UsePositionCard(int32(playerID), req.Position); err != nil {
+			if err := g.UsePositionCard(int32(playerId), req.Position); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
@@ -190,7 +190,7 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 
 		// 开始ROLL队伍
 		game.POST("/roll", func(c *gin.Context) {
-			playerID := c.GetInt64("playerID")
+			playerId := c.GetInt64("playerId")
 
 			var req struct {
 				GameId int32 `json:"gameId"`
@@ -200,7 +200,7 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 				return
 			}
 
-			if err := g.RollTeams(int32(playerID), req.GameId); err != nil {
+			if err := g.RollTeams(int32(playerId), req.GameId); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
@@ -210,9 +210,9 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 
 		// 重ROLL英雄
 		game.POST("/reroll", func(c *gin.Context) {
-			playerID := c.GetInt64("playerID")
+			playerId := c.GetInt64("playerId")
 
-			if err := g.ReRollHero(int32(playerID)); err != nil {
+			if err := g.ReRollHero(int32(playerId)); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
@@ -222,7 +222,7 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 
 		// 开始游戏
 		game.POST("/start", func(c *gin.Context) {
-			playerID := c.GetInt64("playerID")
+			playerId := c.GetInt64("playerId")
 
 			var req struct {
 				GameId int32 `json:"gameId"`
@@ -232,7 +232,7 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 				return
 			}
 
-			if err := g.StartGame(int32(playerID), req.GameId); err != nil {
+			if err := g.StartGame(int32(playerId), req.GameId); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
@@ -242,7 +242,7 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 
 		// 结束游戏并指定胜者
 		game.POST("/end", func(c *gin.Context) {
-			playerID := c.GetInt64("playerID")
+			playerId := c.GetInt64("playerId")
 
 			var req struct {
 				GameId int32 `json:"gameId"`
@@ -253,7 +253,7 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 				return
 			}
 
-			if err := g.EndGame(int32(playerID), req.GameId, req.Winner); err != nil {
+			if err := g.EndGame(int32(playerId), req.GameId, req.Winner); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
@@ -264,18 +264,18 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 
 	// WebSocket route
 	router.GET("/ws", func(c *gin.Context) {
-		playerID := c.GetInt64("playerID")
+		playerId := c.GetInt64("playerId")
 		conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		g.AddClient(int32(playerID), conn)
+		g.AddClient(int32(playerId), conn)
 
 		// Send initial data
-		g.SendToPlayer(int32(playerID), "players_update", g.GetAllPlayers())
-		g.SendToPlayer(int32(playerID), "games_update", g.GetAllGames())
+		g.SendToPlayer(int32(playerId), "players_update", g.GetAllPlayers())
+		g.SendToPlayer(int32(playerId), "games_update", g.GetAllGames())
 
 		// 不需要单独的处理协程，因为现在由Client.handleConnection管理
 	})
@@ -304,14 +304,14 @@ func AuthMiddleware(g *logic.Global) gin.HandlerFunc {
 		}
 
 		// 检查玩家是否存在
-		if _, err = g.GetPlayer(claims.PlayerID); err != nil {
+		if _, err = g.GetPlayer(claims.PlayerId); err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid player"})
 			c.Abort()
 			return
 		}
 
 		// 使用GetInt64代替GetInt32
-		c.Set("playerID", int64(claims.PlayerID))
+		c.Set("playerId", int64(claims.PlayerId))
 		c.Next()
 	}
 }

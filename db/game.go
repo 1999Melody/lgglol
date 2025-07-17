@@ -18,13 +18,13 @@ const (
 )
 
 type Game struct {
-	Id        int32         `json:"id"`         // 游戏ID, 主键唯一
-	Name      string        `json:"name"`       // 游戏房间名
-	Creator   int32         `json:"creator"`    // 创建者ID
-	Players   []*TeamPlayer `json:"players"`    // 玩家ID列表
-	Status    GameStatus    `json:"status"`     // 游戏状态
-	Winner    int32         `json:"winner"`     // 胜利方, 1表示Team1胜利, 2表示Team2胜利
-	CreatedAt time.Time     `json:"created_at"` // 创建时间
+	Id        int32         `json:"id"`        // 游戏Id, 主键唯一
+	Name      string        `json:"name"`      // 游戏房间名
+	Creator   int32         `json:"creator"`   // 创建者Id
+	Players   []*TeamPlayer `json:"players"`   // 玩家Id列表
+	Status    GameStatus    `json:"status"`    // 游戏状态
+	Winner    int32         `json:"winner"`    // 胜利方, 1表示Team1胜利, 2表示Team2胜利
+	CreatedAt time.Time     `json:"createdAt"` // 创建时间
 }
 
 type Position string
@@ -38,13 +38,13 @@ const (
 )
 
 type TeamPlayer struct {
-	Id          int32    `json:"id"`           // 玩家ID
-	Name        string   `json:"name"`         // 玩家名称
-	Team        int32    `json:"team"`         // 队伍编号, 1表示Team1, 2表示Team2
-	Position    Position `json:"position"`     // 玩家位置
-	UsePosition bool     `json:"use_position"` // 是否使用位置卡
-	DiceCnt     int32    `json:"dice_cnt"`     // 本次游戏使用的骰子数量
-	Hero        string   `json:"hero"`         // 英雄
+	Id          int32    `json:"id"`          // 玩家Id
+	Name        string   `json:"name"`        // 玩家名称
+	Team        int32    `json:"team"`        // 队伍编号, 1表示Team1, 2表示Team2
+	Position    Position `json:"position"`    // 玩家位置
+	UsePosition bool     `json:"usePosition"` // 是否使用位置卡
+	DiceCnt     int32    `json:"diceCnt"`     // 本次游戏使用的骰子数量
+	Hero        string   `json:"hero"`        // 英雄
 }
 
 func LoadAllGames() (map[int32]*Game, error) {
