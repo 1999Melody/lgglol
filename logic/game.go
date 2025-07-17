@@ -150,40 +150,40 @@ func (g *Global) LeaveGame(playerID int32) error {
 	return nil
 }
 
-func (g *Global) DeleteGame(requesterID, gameID int32) error {
-	g.mu.Lock()
-	defer g.mu.Unlock()
-
-	requester, ok := g.Players[requesterID]
-	if !ok {
-		return ErrPlayerNotFound
-	}
-
-	game, ok := g.Games[gameID]
-	if !ok {
-		return ErrGameNotFound
-	}
-
-	// Check permission
-	if requester.Role == db.RoleUser && game.Creator != requesterID {
-		return ErrPermissionDenied
-	}
-
-	players := make([]*db.Player, len(game.Players))
-	// Update all players in the game
-	for _, player := range game.Players {
-		if p, ok := g.Players[player.Id]; ok {
-			p.CurGameId = 0
-			players = append(players, p)
-		}
-	}
-
-	g.innerPlayersChange(players)
-
-	delete(g.Games, gameID)
-	g.innerGameDel(gameID)
-	return nil
-}
+//func (g *Global) DeleteGame(operatorId, gameID int32) error {
+//	g.mu.Lock()
+//	defer g.mu.Unlock()
+//
+//	operator, ok := g.Players[operatorId]
+//	if !ok {
+//		return ErrPlayerNotFound
+//	}
+//
+//	game, ok := g.Games[gameID]
+//	if !ok {
+//		return ErrGameNotFound
+//	}
+//
+//	// Check permission
+//	if operator.Role == db.RoleUser && game.Creator != operatorId {
+//		return ErrPermissionDenied
+//	}
+//
+//	players := make([]*db.Player, len(game.Players))
+//	// Update all players in the game
+//	for _, player := range game.Players {
+//		if p, ok := g.Players[player.Id]; ok {
+//			p.CurGameId = 0
+//			players = append(players, p)
+//		}
+//	}
+//
+//	g.innerPlayersChange(players)
+//
+//	delete(g.Games, gameID)
+//	g.innerGameDel(gameID)
+//	return nil
+//}
 
 func (g *Global) UsePositionCard(playerID int32, position db.Position) error {
 	g.mu.Lock()
@@ -249,11 +249,11 @@ func (g *Global) UsePositionCard(playerID int32, position db.Position) error {
 	return nil
 }
 
-func (g *Global) RollTeams(playerId, gameID int32) error {
+func (g *Global) RollTeams(operatorId, gameID int32) error {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
-	player, ok := g.Players[playerId]
+	operator, ok := g.Players[operatorId]
 	if !ok {
 		return ErrPlayerNotFound
 	}
@@ -263,7 +263,7 @@ func (g *Global) RollTeams(playerId, gameID int32) error {
 		return ErrGameNotFound
 	}
 
-	if player.Id != game.Creator && player.Role == db.RoleUser {
+	if operator.Id != game.Creator && operator.Role == db.RoleUser {
 		return ErrPermissionDenied
 	}
 
@@ -455,11 +455,11 @@ func (g *Global) StartGame(playerId, gameID int32) error {
 	return nil
 }
 
-func (g *Global) EndGame(creatorID, gameID int32, winner int32) error {
+func (g *Global) EndGame(operatorId, gameID int32, winner int32) error {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
-	creator, ok := g.Players[creatorID]
+	operator, ok := g.Players[operatorId]
 	if !ok {
 		return ErrPlayerNotFound
 	}
@@ -469,7 +469,7 @@ func (g *Global) EndGame(creatorID, gameID int32, winner int32) error {
 		return ErrGameNotFound
 	}
 
-	if game.Creator != creatorID && creator.Role == db.RoleUser {
+	if game.Creator != operatorId && operator.Role == db.RoleUser {
 		return ErrNotGameOwner
 	}
 

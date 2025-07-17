@@ -123,15 +123,18 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 			c.JSON(http.StatusOK, game)
 
 		})
-		game.POST("/:game_id/join", func(c *gin.Context) {
+		game.POST("/join", func(c *gin.Context) {
 			playerID := c.GetInt64("playerID")
-			gameID, err := getInt32Param(c, "game_id")
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid game ID"})
+
+			var req struct {
+				GameId int32 `json:"game_Id"`
+			}
+			if err := c.ShouldBindJSON(&req); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
 
-			if err = g.JoinGame(int32(playerID), gameID); err != nil {
+			if err := g.JoinGame(int32(playerID), req.GameId); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
@@ -148,23 +151,26 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 
 			c.JSON(http.StatusOK, gin.H{"message": "left game successfully"})
 		})
-		game.DELETE("/:game_id/delete", func(c *gin.Context) {
-			playerID := c.GetInt64("playerID")
-			gameID, err := getInt32Param(c, "game_id")
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid game ID"})
-				return
-			}
-
-			if err = g.DeleteGame(int32(playerID), gameID); err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-				return
-			}
-
-			c.JSON(http.StatusOK, gin.H{"message": "game deleted successfully"})
-		})
+		//game.DELETE("/delete", func(c *gin.Context) {
+		//	playerID := c.GetInt64("playerID")
+		//
+		//	var req struct {
+		//		GameId int32 `json:"gameId"`
+		//	}
+		//	if err := c.ShouldBindJSON(&req); err != nil {
+		//		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		//		return
+		//	}
+		//
+		//	if err := g.DeleteGame(int32(playerID), req.GameId); err != nil {
+		//		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		//		return
+		//	}
+		//
+		//	c.JSON(http.StatusOK, gin.H{"message": "game deleted successfully"})
+		//})
 		// 使用位置卡
-		game.POST("/:game_id/use_position", func(c *gin.Context) {
+		game.POST("/use_position", func(c *gin.Context) {
 			playerID := c.GetInt64("playerID")
 			var req struct {
 				Position db.Position `json:"position"`
@@ -183,15 +189,18 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 		})
 
 		// 开始ROLL队伍
-		game.POST("/:game_id/roll", func(c *gin.Context) {
+		game.POST("/roll", func(c *gin.Context) {
 			playerID := c.GetInt64("playerID")
-			gameID, err := getInt32Param(c, "game_id")
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid game ID"})
+
+			var req struct {
+				GameId int32 `json:"gameId"`
+			}
+			if err := c.ShouldBindJSON(&req); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
 
-			if err = g.RollTeams(int32(playerID), gameID); err != nil {
+			if err := g.RollTeams(int32(playerID), req.GameId); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
@@ -212,15 +221,18 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 		})
 
 		// 开始游戏
-		game.POST("/:game_id/start", func(c *gin.Context) {
+		game.POST("/start", func(c *gin.Context) {
 			playerID := c.GetInt64("playerID")
-			gameID, err := getInt32Param(c, "game_id")
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid game ID"})
+
+			var req struct {
+				GameId int32 `json:"gameId"`
+			}
+			if err := c.ShouldBindJSON(&req); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
 
-			if err = g.StartGame(int32(playerID), gameID); err != nil {
+			if err := g.StartGame(int32(playerID), req.GameId); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
@@ -229,23 +241,19 @@ func SetupRoutes(router *gin.Engine, g *logic.Global) {
 		})
 
 		// 结束游戏并指定胜者
-		game.POST("/:game_id/end", func(c *gin.Context) {
+		game.POST("/end", func(c *gin.Context) {
 			playerID := c.GetInt64("playerID")
-			gameID, err := getInt32Param(c, "game_id")
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid game ID"})
-				return
-			}
 
 			var req struct {
+				GameId int32 `json:"gameId"`
 				Winner int32 `json:"winner"` // 1 or 2
 			}
-			if err = c.ShouldBindJSON(&req); err != nil {
+			if err := c.ShouldBindJSON(&req); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
 
-			if err = g.EndGame(int32(playerID), gameID, req.Winner); err != nil {
+			if err := g.EndGame(int32(playerID), req.GameId, req.Winner); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}

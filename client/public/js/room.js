@@ -256,12 +256,15 @@ function initRoomEventListeners(game, userId, isCreator) {
     if (rollTeamsBtn) {
         rollTeamsBtn.addEventListener('click', async () => {
             try {
-                const response = await fetch(`${AppConfig.API_BASE_URL}/api/game/${game.id}/roll`, {
+                const response = await fetch(`${AppConfig.API_BASE_URL}/api/game/roll`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                         'Content-Type': 'application/json'
-                    }
+                    },
+                    body: JSON.stringify({
+                        gameId : parseInt(game.id),
+                    })
                 });
 
                 if (!response.ok) {
@@ -281,12 +284,15 @@ function initRoomEventListeners(game, userId, isCreator) {
     if (startGameBtn) {
         startGameBtn.addEventListener('click', async () => {
             try {
-                const response = await fetch(`${AppConfig.API_BASE_URL}/api/game/${game.id}/start`, {
+                const response = await fetch(`${AppConfig.API_BASE_URL}/api/game/start`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                         'Content-Type': 'application/json'
-                    }
+                    },
+                    body: JSON.stringify({
+                        gameId : parseInt(game.id),
+                    })
                 });
 
                 if (!response.ok) {
@@ -352,7 +358,7 @@ function showPositionCardModal() {
     const user = JSON.parse(localStorage.getItem('user'));
     const modal = document.getElementById('positionCardModal');
 
-    document.getElementById('positionCardCount').textContent = user.positionCard;
+    document.getElementById('positionCardCount').textContent = user.position_card;
 
     // 位置按钮事件
     const positionBtns = document.querySelectorAll('.position-btn');
@@ -495,13 +501,14 @@ function showEndGameModal(gameId) {
 // 结束游戏
 async function endGame(gameId, winner) {
     try {
-        const response = await fetch(`${AppConfig.API_BASE_URL}/api/game/${gameId}/end`, {
+        const response = await fetch(`${AppConfig.API_BASE_URL}/api/game/end`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                gameId : parseInt(gameId),
                 winner
             })
         });

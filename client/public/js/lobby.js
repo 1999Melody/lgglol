@@ -234,12 +234,15 @@ function getStatusText(status) {
 
 async function joinGame(gameId) {
     try {
-        const response = await fetch(`${AppConfig.API_BASE_URL}/api/game/${gameId}/join`, {
+        const response = await fetch(`${AppConfig.API_BASE_URL}/api/game/join`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({
+                game_Id: parseInt(gameId)
+            })
         });
 
         if (!response.ok) {
