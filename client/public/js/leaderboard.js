@@ -1,21 +1,27 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!checkAuth()) return;
+    // 登录按钮事件
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            window.location.href = 'auth.html';
+        });
+    }
 
-    // 加载用户信息
-    const user = await loadUserInfo();
-    if (!user) return;
-
-    document.getElementById('usernameDisplay').textContent = user.username;
-    document.getElementById('userRole').textContent = user.role === 'root' ? '超级管理员' : user.role === 'admin' ? '管理员' : '用户';
-    document.getElementById('userRole').className = `role-${user.role}`;
-    document.getElementById('userAvatar').style.backgroundImage = `url('assets/images/avatars/${user.id % 10}.png')`;
-
-    // 登出按钮
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('playerId');
-        window.location.href = 'auth.html';
-    });
+    // 检查登录状态
+    if (isLoggedIn()) {
+        try {
+            const user = JSON.parse(localStorage.getItem('user'));
+            document.getElementById('usernameDisplay').textContent = user.username;
+            document.getElementById('userRole').textContent = user.role === 'root' ? '超级管理员' : user.role === 'admin' ? '管理员' : '用户';
+            document.getElementById('userRole').className = `role-${user.role}`;
+            document.getElementById('userAvatar').textContent = user.username.charAt(0).toUpperCase();
+            document.getElementById('userLoginStatus').textContent= '';
+            document.getElementById('loginBtn').innerHTML = '<i class="fas fa-sign-out-alt"></i> 登出';
+            document.getElementById('loginBtn').onclick = logout;
+        } catch (e) {
+            console.error('解析用户信息失败:', e);
+        }
+    }
 
     // 标签页切换
     const tabs = document.querySelectorAll('.tab-btn');
@@ -112,27 +118,27 @@ function renderLeaderboard(players) {
     }
 
     // 位置卡榜
-    const positionTable = document.getElementById('positionTable');
-    if (positionTable) {
-        const sortedByPositionCards = [...players].sort((a, b) => b.positionCard - a.positionCard || b.dice - a.dice);
-
-        positionTable.innerHTML = sortedByPositionCards.map((player, index) => {
-            return `
-                <div class="leaderboard-row">
-                    <div class="rank rank-${index + 1}">${index + 1}</div>
-                    <div class="player">
-                        <div class="player-avatar" style="background-image: url('assets/images/avatars/${player.id % 10}.png')"></div>
-                        <div class="player-info">
-                            <div class="player-name">${player.username}</div>
-                            <div class="player-role role-${player.role}">${player.role === 'root' ? '超级管理员' : player.role === 'admin' ? '管理员' : '玩家'}</div>
-                        </div>
-                    </div>
-                    <div class="stats">${player.positionCard}</div>
-                    <div class="winrate">${player.dice}</div>
-                </div>
-            `;
-        }).join('');
-    }
+    // const positionTable = document.getElementById('positionTable');
+    // if (positionTable) {
+    //     const sortedByPositionCards = [...players].sort((a, b) => b.positionCard - a.positionCard || b.dice - a.dice);
+    //
+    //     positionTable.innerHTML = sortedByPositionCards.map((player, index) => {
+    //         return `
+    //             <div class="leaderboard-row">
+    //                 <div class="rank rank-${index + 1}">${index + 1}</div>
+    //                 <div class="player">
+    //                     <div class="player-avatar" style="background-image: url('assets/images/avatars/${player.id % 10}.png')"></div>
+    //                     <div class="player-info">
+    //                         <div class="player-name">${player.username}</div>
+    //                         <div class="player-role role-${player.role}">${player.role === 'root' ? '超级管理员' : player.role === 'admin' ? '管理员' : '玩家'}</div>
+    //                     </div>
+    //                 </div>
+    //                 <div class="stats">${player.positionCard}</div>
+    //                 <div class="winrate">${player.dice}</div>
+    //             </div>
+    //         `;
+    //     }).join('');
+    // }
 }
 
 // 渲染当前玩家卡片

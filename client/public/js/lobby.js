@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // 检查登录状态
-    const isLoggedIn = !!localStorage.getItem('token');
+    const isLoggedIn = isLoggedIn();
     if (isLoggedIn) {
         try {
             const user = JSON.parse(localStorage.getItem('user'));

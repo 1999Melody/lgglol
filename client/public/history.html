@@ -13,7 +13,7 @@
 <div class="container">
   <header class="main-header">
     <div class="logo">
-      <img src="assets/images/logo.png" alt="LGG LOL">
+      <div class="logo-icon"><i class="fas fa-gamepad"></i></div>
       <h1>英雄联盟5v5对战平台</h1>
     </div>
     <nav class="main-nav">
@@ -24,12 +24,13 @@
       </ul>
     </nav>
     <div class="user-info" id="userInfo">
-      <div class="avatar" id="userAvatar"></div>
+      <div class="avatar" id="userAvatar">游</div>
       <div class="details">
-        <span class="username" id="usernameDisplay"></span>
+        <span class="username" id="usernameDisplay">游客</span>
         <span class="role" id="userRole"></span>
+        <span class="role" id="userLoginStatus">未登录</span>
       </div>
-      <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
+      <button id="loginBtn" class="login-btn"><i class="fas fa-sign-in-alt"></i> 登录</button>
     </div>
   </header>
 
@@ -69,14 +70,14 @@
         </div>
       </div>
 
-      <div class="pagination" id="pagination">
-        <!-- 分页控件将通过JavaScript动态加载 -->
-      </div>
-    </div>
-  </main>
+      <!--<div class="pagination" id="pagination">-->
+       <!-- 分页控件将通过JavaScript动态加载 -->
+      <!--</div>-->
+   </div>
+ </main>
 
   <footer class="main-footer">
-    <p>&copy; 2023 英雄联盟5v5对战平台. 所有权利保留.</p>
+    <p>&copy; 2025 英雄联盟5v5对战平台. 所有权利归作者所有.</p>
     <div class="social-links">
       <a href="#"><i class="fab fa-discord"></i></a>
       <a href="#"><i class="fab fa-twitter"></i></a>

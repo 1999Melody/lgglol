@@ -1,21 +1,27 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!isLoggedIn()) return;
+    // 登录按钮事件
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            window.location.href = 'auth.html';
+        });
+    }
 
-    // 加载用户信息
-    const user = await loadUserInfo();
-    if (!user) return;
-
-    document.getElementById('usernameDisplay').textContent = user.username;
-    document.getElementById('userRole').textContent = user.role === 'root' ? '超级管理员' : user.role === 'admin' ? '管理员' : '用户';
-    document.getElementById('userRole').className = `role-${user.role}`;
-    document.getElementById('userAvatar').style.backgroundImage = `url('assets/images/avatars/${user.id % 10}.png')`;
-
-    // 登出按钮
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('playerId');
-        window.location.href = 'auth.html';
-    });
+    // 检查登录状态
+    if (isLoggedIn()) {
+        try {
+            const user = JSON.parse(localStorage.getItem('user'));
+            document.getElementById('usernameDisplay').textContent = user.username;
+            document.getElementById('userRole').textContent = user.role === 'root' ? '超级管理员' : user.role === 'admin' ? '管理员' : '用户';
+            document.getElementById('userRole').className = `role-${user.role}`;
+            document.getElementById('userAvatar').textContent = user.username.charAt(0).toUpperCase();
+            document.getElementById('userLoginStatus').textContent= '';
+            document.getElementById('loginBtn').innerHTML = '<i class="fas fa-sign-out-alt"></i> 登出';
+            document.getElementById('loginBtn').onclick = logout;
+        } catch (e) {
+            console.error('解析用户信息失败:', e);
+        }
+    }
 
     // 筛选器事件
     document.getElementById('dateFilter').addEventListener('change', loadHistoryData);
@@ -47,8 +53,8 @@ async function loadHistoryData(page = 1) {
         }
 
         const data = await response.json();
-        renderHistory(data.games);
-        renderPagination(data.totalPages, page);
+        renderHistory(data);
+        //renderPagination(data.totalPages, page);
     } catch (error) {
         showNotification(error.message, 'error');
     }
@@ -62,7 +68,7 @@ function renderHistory(games) {
     if (games.length === 0) {
         historyList.innerHTML = `
             <div class="empty-history">
-                <i class="fas fa-history"></i>
+                <!-- <i class="fas fa-history"></i> -->
                 <p>暂无历史记录</p>
             </div>
         `;
@@ -135,45 +141,45 @@ function renderHistory(games) {
 }
 
 // 渲染分页
-function renderPagination(totalPages, currentPage) {
-    const pagination = document.getElementById('pagination');
-    if (!pagination) return;
-
-    if (totalPages <= 1) {
-        pagination.innerHTML = '';
-        return;
-    }
-
-    let html = '';
-
-    // 上一页按钮
-    html += `
-        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
-                onclick="loadHistoryData(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-            <i class="fas fa-chevron-left"></i>
-        </button>
-    `;
-
-    // 页码按钮
-    for (let i = 1; i <= totalPages; i++) {
-        html += `
-            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
-                    onclick="loadHistoryData(${i})">
-                ${i}
-            </button>
-        `;
-    }
-
-    // 下一页按钮
-    html += `
-        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
-                onclick="loadHistoryData(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    `;
-
-    pagination.innerHTML = html;
-}
+// function renderPagination(totalPages, currentPage) {
+//     const pagination = document.getElementById('pagination');
+//     if (!pagination) return;
+//
+//     if (totalPages <= 1) {
+//         pagination.innerHTML = '';
+//         return;
+//     }
+//
+//     let html = '';
+//
+//     // 上一页按钮
+//     html += `
+//         <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}"
+//                 onclick="loadHistoryData(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+//             <i class="fas fa-chevron-left"></i>
+//         </button>
+//     `;
+//
+//     // 页码按钮
+//     for (let i = 1; i <= totalPages; i++) {
+//         html += `
+//             <button class="pagination-btn ${i === currentPage ? 'active' : ''}"
+//                     onclick="loadHistoryData(${i})">
+//                 ${i}
+//             </button>
+//         `;
+//     }
+//
+//     // 下一页按钮
+//     html += `
+//         <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}"
+//                 onclick="loadHistoryData(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+//             <i class="fas fa-chevron-right"></i>
+//         </button>
+//     `;
+//
+//     pagination.innerHTML = html;
+// }
 
 // 显示比赛详情模态框
 async function showGameDetailModal(gameId) {
