@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!checkAuth()) return;
+    if (!isLoggedIn()) return;
 
     // 加载用户信息
     const user = await loadUserInfo();
@@ -82,7 +82,7 @@ function renderHistory(games) {
                     <div class="history-game-name">${game.name}</div>
                     <div class="history-game-date">
                         <i class="fas fa-calendar-alt"></i>
-                        <span>${formatDate(game.createdAt)}</span>
+                        <span>${formatDate(game.created_at)}</span>
                     </div>
                 </div>
                 <div class="history-teams">
@@ -205,7 +205,7 @@ async function showGameDetailModal(gameId) {
                 <div class="game-detail-meta">
                     <div class="game-detail-meta-item">
                         <div class="game-detail-meta-label">创建时间</div>
-                        <div class="game-detail-meta-value">${formatDate(game.createdAt)}</div>
+                        <div class="game-detail-meta-value">${formatDate(game.created_at)}</div>
                     </div>
                     <div class="game-detail-meta-item">
                         <div class="game-detail-meta-label">比赛结果</div>

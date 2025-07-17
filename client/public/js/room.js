@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!checkAuth()) return;
+    if (!isLoggedIn()) return;
 
     // 获取游戏ID
     const gameId = getUrlParam('game_id');
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // 加载用户信息
-    const user = await loadUserInfo();
+    const user = JSON.parse(localStorage.getItem('user'));
     if (!user) return;
 
     document.getElementById('usernameDisplay').textContent = user.username;
@@ -48,7 +48,7 @@ async function loadRoomData(gameId) {
         }
 
         const games = await response.json();
-        const game = games[gameId]
+        const game = games.find(g => g.id === parseInt(gameId));
         renderRoom(game);
     } catch (error) {
         showNotification(error.message, 'error');
@@ -66,6 +66,7 @@ function renderRoom(game) {
     const user = JSON.parse(localStorage.getItem('user'));
     const isCreator = game.creator === user.id;
     const isInGame = game.players.some(p => p.id === user.id);
+    const creatorName = game.players.find(p => p.id === game.creator)?.name || '未知玩家';
 
     if (!isInGame && game.status !== 'waiting') {
         showNotification('你不在该游戏中', 'error');
@@ -84,9 +85,9 @@ function renderRoom(game) {
                 <div class="room-status ${game.status}">${getStatusText(game.status)}</div>
             </div>
             <div class="room-meta">
-                <span><i class="fas fa-crown"></i> 房主: ${game.creatorName}</span>
+                <span><i class="fas fa-crown"></i> 房主: ${creatorName}</span>
                 <span><i class="fas fa-users"></i> 人数: ${game.players.length}/10</span>
-                <span><i class="fas fa-clock"></i> 创建时间: ${formatDate(game.createdAt)}</span>
+                <span><i class="fas fa-clock"></i> 创建时间: ${formatDate(game.created_at)}</span>
             </div>
         </div>
         
@@ -98,7 +99,7 @@ function renderRoom(game) {
                             <i class="fas fa-users"></i>
                             <span>队伍1</span>
                         </div>
-                        ${game.status === 'finished' && game.winner === 1 ? '<div class="team-winner">胜利</div>' : ''}
+                        ${game.status === 'finished' && game.winner === 1 ? '<div class="team-winner">胜利！！！</div>' : ''}
                     </div>
                     <div class="team-players">
                         ${renderTeamPlayers(game.players, 1, game.status)}
@@ -144,7 +145,7 @@ function renderTeamPlayers(players, team, status) {
             positionPlayers.forEach(player => {
                 html += `
                     <div class="player-slot">
-                        <div class="player-avatar" style="background-image: url('assets/images/avatars/${player.id % 10}.png')"></div>
+                        <div class="player-avatar" style="background-image: url('../assets/images/avatars/${player.id%10}.png')"></div>
                         <div class="player-details">
                             <div class="player-name">${player.name}</div>
                             <div class="player-position">
@@ -153,9 +154,9 @@ function renderTeamPlayers(players, team, status) {
                             </div>
                             ${status === 'rolling' || status === 'inGame' ? `
                                 <div class="player-hero">
-                                    <div class="hero-image" style="background-image: url('assets/images/heroes/${player.hero}.png')"></div>
+                                    <div class="hero-image" style="background-image: url('../assets/images/heroes/${player.hero}.png')"></div>
                                     <div class="hero-name">${player.hero}</div>
-                                    ${player.id === parseInt(localStorage.getItem('playerId')) && status === 'rolling' ? `
+                                    ${player.id === getMyPlayerId() && status === 'rolling' ? `
                                         <button class="reroll-btn" data-player-id="${player.id}" data-hero="${player.hero}">
                                             <i class="fas fa-dice"></i> 重ROLL
                                         </button>

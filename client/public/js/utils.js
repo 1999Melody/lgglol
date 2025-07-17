@@ -75,6 +75,11 @@ function getUrlParam(name) {
     return urlParams.get(name);
 }
 
+function getMyPlayerId() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user ? user.id : 0;
+}
+
 // 添加全局样式
 function addGlobalStyles() {
     const style = document.createElement('style');

@@ -646,7 +646,6 @@ body {
 .search-box input:focus {
     outline: none;
     border-color: var(--primary-color);
-    width: 250px;
 }
 
 .search-box i {

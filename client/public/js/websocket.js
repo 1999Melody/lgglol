@@ -279,10 +279,10 @@ async function joinGame(gameId) {
 
 // 初始化WebSocket事件监听
 document.addEventListener('DOMContentLoaded', () => {
-    if (checkAuth()) {
-        const playerId = localStorage.getItem('playerId');
-        if (playerId) {
-            initWebSocket(playerId);
+    if (isLoggedIn()) {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            initWebSocket(user.Id);
         }
     }
 
@@ -290,13 +290,3 @@ document.addEventListener('DOMContentLoaded', () => {
         initLobbyEventListeners();
     }
 });
-
-// 检查用户是否登录
-function checkAuth() {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = 'auth.html';
-        return false;
-    }
-    return true;
-}

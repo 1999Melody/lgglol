@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('userRole').textContent = user.role === 'root' ? '超级管理员' : user.role === 'admin' ? '管理员' : '用户';
             document.getElementById('userRole').className = `role-${user.role}`;
             document.getElementById('userAvatar').textContent = user.username.charAt(0).toUpperCase();
+            document.getElementById('userLoginStatus').textContent= '';
             document.getElementById('loginBtn').innerHTML = '<i class="fas fa-sign-out-alt"></i> 登出';
             document.getElementById('loginBtn').onclick = logout;
         } catch (e) {
@@ -143,6 +144,9 @@ function renderPlayers(players) {
     const playersGrid = document.getElementById('playersGrid');
     if (!playersGrid) return;
 
+    // players按playerId排序
+    players.sort((a, b) => a.id - b.id);
+
     playersGrid.innerHTML = players.map(player => `
         <div class="player-card" data-player-id="${player.id}">
             <div class="player-role role-${player.role}">${player.role === 'root' ? '超级管理员' : player.role === 'admin' ? '管理员' : '玩家'}</div>
@@ -169,6 +173,8 @@ function renderPlayers(players) {
 function renderGames(games, isLoggedIn) {
     const gamesList = document.getElementById('gamesList');
     if (!gamesList) return;
+
+    games.sort((a, b) => a.id - b.id);
 
     gamesList.innerHTML = games.map(game => `
         <div class="game-card" data-game-id="${game.id}">

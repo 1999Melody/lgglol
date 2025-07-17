@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 检查是否已登录
-    if (localStorage.getItem('token')) {
+    if (isLoggedIn()) {
         window.location.href = 'lobby.html';
         return;
     }
@@ -24,6 +24,15 @@ document.addEventListener('DOMContentLoaded', () => {
         registerForm.classList.add('active');
         loginForm.classList.remove('active');
     });
+
+    const action = getUrlParam('action');
+    if (action === 'register') {
+        // 如果是注册页面，自动切换到注册标签
+        document.getElementById('registerTab').click();
+    } else {
+        // 默认显示登录标签
+        document.getElementById('loginTab').click();
+    }
 
     // 登录表单提交
     const loginFormElement = document.getElementById('loginFormElement');
