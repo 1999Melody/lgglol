@@ -4,18 +4,13 @@ const maxReconnectAttempts = 5;
 const reconnectDelay = 3000; // 3秒
 
 // 初始化WebSocket连接
-function initWebSocket(playerId) {
+function initWebSocket() {
     if (socket) {
         socket.close();
     }
 
-    // const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-    // const host = window.location.host;
-    // const wsUrl = `${protocol}${host}/ws`;
-
     // 使用配置的WebSocket地址
     const wsUrl = `${AppConfig.WS_BASE_URL}/ws`;
-
     socket = new WebSocket(wsUrl);
 
     socket.onopen = () => {
@@ -48,7 +43,7 @@ function initWebSocket(playerId) {
             // 非正常关闭，尝试重新连接
             reconnectAttempts++;
             console.log(`尝试重新连接 (${reconnectAttempts}/${maxReconnectAttempts})...`);
-            setTimeout(() => initWebSocket(playerId), reconnectDelay);
+            setTimeout(() => initWebSocket(), reconnectDelay);
         }
     };
 
@@ -279,13 +274,7 @@ async function joinGame(gameId) {
 
 // 初始化WebSocket事件监听
 document.addEventListener('DOMContentLoaded', () => {
-    if (isLoggedIn()) {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (user) {
-            initWebSocket(user.Id);
-        }
-    }
-
+    initWebSocket();
     if (window.location.pathname.endsWith('lobby.html')) {
         initLobbyEventListeners();
     }

@@ -29,9 +29,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 加载房间数据
     await loadRoomData(gameId);
-
-    // 初始化WebSocket
-    initWebSocket(user.id);
 });
 
 // 加载房间数据
@@ -385,10 +382,6 @@ function showPositionCardModal() {
 
                 showNotification(`已锁定位置: ${position}`, 'success');
                 modal.style.display = 'none';
-
-                // 更新用户信息
-                const updatedUser = await response.json();
-                localStorage.setItem('user', JSON.stringify(updatedUser));
 
                 // 重新加载房间数据
                 const gameId = getUrlParam('gameId');
