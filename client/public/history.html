@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>历史记录 - 英雄联盟5v5对战平台</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/history.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="js/config.js"></script>
+</head>
+<body>
+<div class="container">
+  <header class="main-header">
+    <div class="logo">
+      <img src="assets/images/logo.png" alt="LGG LOL">
+      <h1>英雄联盟5v5对战平台</h1>
+    </div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="lobby.html"><i class="fas fa-home"></i> 大厅</a></li>
+        <li><a href="leaderboard.html"><i class="fas fa-trophy"></i> 排行榜</a></li>
+        <li><a href="history.html" class="active"><i class="fas fa-history"></i> 历史记录</a></li>
+      </ul>
+    </nav>
+    <div class="user-info" id="userInfo">
+      <div class="avatar" id="userAvatar"></div>
+      <div class="details">
+        <span class="username" id="usernameDisplay"></span>
+        <span class="role" id="userRole"></span>
+      </div>
+      <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="history-container">
+      <div class="history-header">
+        <h2><i class="fas fa-history"></i> 比赛历史记录</h2>
+        <div class="filters">
+          <div class="filter-group">
+            <label for="dateFilter">日期:</label>
+            <select id="dateFilter">
+              <option value="all">全部</option>
+              <option value="today">今天</option>
+              <option value="week">本周</option>
+              <option value="month">本月</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="resultFilter">结果:</label>
+            <select id="resultFilter">
+              <option value="all">全部</option>
+              <option value="win">胜利</option>
+              <option value="loss">失败</option>
+            </select>
+          </div>
+          <button class="refresh-btn" id="refreshHistory">
+            <i class="fas fa-sync-alt"></i> 刷新
+          </button>
+        </div>
+      </div>
+
+      <div class="history-list" id="historyList">
+        <!-- 历史记录将通过JavaScript动态加载 -->
+        <div class="loading-history">
+          <div class="loader"></div>
+          <p>正在加载历史记录...</p>
+        </div>
+      </div>
+
+      <div class="pagination" id="pagination">
+        <!-- 分页控件将通过JavaScript动态加载 -->
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <p>&copy; 2023 英雄联盟5v5对战平台. 所有权利保留.</p>
+    <div class="social-links">
+      <a href="#"><i class="fab fa-discord"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-github"></i></a>
+    </div>
+  </footer>
+</div>
+
+<!-- 比赛详情的模态框 -->
+<div class="modal" id="gameDetailModal">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h2 id="gameDetailTitle">比赛详情</h2>
+    <div class="game-detail-content" id="gameDetailContent">
+      <!-- 比赛详情将通过JavaScript动态加载 -->
+    </div>
+  </div>
+</div>
+
+<script src="js/utils.js"></script>
+<script src="js/websocket.js"></script>
+<script src="js/history.js"></script>
+</body>
+</html>

@@ -1,0 +1,464 @@
+.room-container {
+    background-color: var(--background-light);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--box-shadow);
+    position: relative;
+    min-height: 70vh;
+}
+
+.room-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.room-loading .loader {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.room-title {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.room-status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.room-meta {
+    display: flex;
+    gap: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.room-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.room-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.room-teams {
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+}
+
+.team {
+    flex: 1;
+    background-color: var(--background-lighter);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.team::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+}
+
+.team-1 {
+    border-left: 5px solid #2196f3;
+}
+
+.team-2 {
+    border-left: 5px solid #f44336;
+}
+
+.team-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.team-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.team-1 .team-title {
+    color: #2196f3;
+}
+
+.team-2 .team-title {
+    color: #f44336;
+}
+
+.team-players {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.player-slot {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: var(--transition);
+}
+
+.player-slot.empty {
+    justify-content: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    min-height: 60px;
+}
+
+.player-slot.empty:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+}
+
+.player-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--background-light);
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+.player-details {
+    flex: 1;
+}
+
+.player-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.player-position {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.player-position i {
+    color: var(--primary-color);
+}
+
+.player-hero {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.hero-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--background-light);
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.reroll-btn {
+    background: none;
+    border: none;
+    color: var(--warning-color);
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: var(--transition);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius);
+}
+
+.reroll-btn:hover {
+    background-color: rgba(255, 152, 0, 0.1);
+}
+
+.reroll-btn i {
+    font-size: 0.9rem;
+}
+
+.room-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.position-card-btn {
+    background-color: rgba(30, 136, 229, 0.2);
+    color: var(--primary-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.position-card-btn:hover {
+    background-color: rgba(30, 136, 229, 0.3);
+}
+
+.position-card-btn i {
+    font-size: 1rem;
+}
+
+.roll-teams-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.roll-teams-btn:hover {
+    background-color: #e64a19;
+    transform: translateY(-2px);
+}
+
+.roll-teams-btn i {
+    font-size: 1.1rem;
+}
+
+.start-game-btn {
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.start-game-btn:hover {
+    background-color: #388e3c;
+    transform: translateY(-2px);
+}
+
+.start-game-btn i {
+    font-size: 1.1rem;
+}
+
+.end-game-btn {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.end-game-btn:hover {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+}
+
+.end-game-btn i {
+    font-size: 1.1rem;
+}
+
+.leave-room-btn {
+    background-color: var(--background-lighter);
+    color: var(--text-primary);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.leave-room-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.leave-room-btn i {
+    font-size: 1.1rem;
+}
+
+/* 位置卡模态框 */
+.position-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.position-btn {
+    padding: 1rem;
+    background-color: var(--background-lighter);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.position-btn:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+.position-btn[data-position="上单"] {
+    color: #ff9800;
+}
+
+.position-btn[data-position="打野"] {
+    color: #4caf50;
+}
+
+.position-btn[data-position="中单"] {
+    color: #2196f3;
+}
+
+.position-btn[data-position="ADC"] {
+    color: #f44336;
+}
+
+.position-btn[data-position="辅助"] {
+    color: #9c27b0;
+}
+
+.position-info {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* 重新ROLL英雄模态框 */
+.current-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1.5rem 0;
+    gap: 0.5rem;
+}
+
+.current-hero img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--background-lighter);
+    border: 3px solid var(--warning-color);
+}
+
+.reroll-info {
+    text-align: center;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.cancel-btn {
+    background-color: var(--background-lighter);
+    color: var(--text-primary);
+}
+
+.confirm-btn {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .room-teams {
+        flex-direction: column;
+    }
+
+    .room-actions {
+        flex-wrap: wrap;
+    }
+
+    .position-options {
+        grid-template-columns: 1fr;
+    }
+}

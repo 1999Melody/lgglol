@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 - 英雄联盟5v5对战平台</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="js/config.js"></script>
+</head>
+<body>
+<div class="auth-container">
+  <div class="auth-header">
+    <div class="logo">
+      <div class="logo-icon"><i class="fas fa-gamepad"></i></div>
+      <h1>英雄联盟5v5对战平台</h1>
+    </div>
+  </div>
+
+  <div class="auth-content">
+    <div class="auth-form-container">
+      <div class="auth-tabs">
+        <button class="tab-btn active" id="loginTab">登录</button>
+        <button class="tab-btn" id="registerTab">注册</button>
+      </div>
+
+      <div class="auth-form active" id="loginForm">
+        <form id="loginFormElement">
+          <div class="form-group">
+            <label for="loginUsername"><i class="fas fa-user"></i> 用户名</label>
+            <input type="text" id="loginUsername" required placeholder="输入您的用户名">
+          </div>
+
+          <div class="form-group">
+            <label for="loginPassword"><i class="fas fa-lock"></i> 密码</label>
+            <input type="password" id="loginPassword" required placeholder="输入您的密码">
+          </div>
+
+          <button type="submit" class="auth-btn">
+            <span>登录</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+
+      <div class="auth-form" id="registerForm">
+        <form id="registerFormElement">
+          <div class="form-group">
+            <label for="registerUsername"><i class="fas fa-user"></i> 用户名</label>
+            <input type="text" id="registerUsername" required placeholder="选择一个用户名">
+          </div>
+
+          <div class="form-group">
+            <label for="registerPassword"><i class="fas fa-lock"></i> 密码</label>
+            <input type="password" id="registerPassword" required placeholder="设置您的密码">
+          </div>
+
+          <div class="form-group">
+            <label for="registerConfirmPassword"><i class="fas fa-lock"></i> 确认密码</label>
+            <input type="password" id="registerConfirmPassword" required placeholder="再次输入密码">
+          </div>
+
+          <button type="submit" class="auth-btn">
+            <span>注册</span>
+            <i class="fas fa-user-plus"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>排行榜 - 英雄联盟5v5对战平台</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/leaderboard.css">
+  <script src="js/config.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<div class="container">
+  <header class="main-header">
+    <div class="logo">
+      <img src="assets/images/logo.png" alt="LGG LOL">
+      <h1>英雄联盟5v5对战平台</h1>
+    </div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="lobby.html"><i class="fas fa-home"></i> 大厅</a></li>
+        <li><a href="leaderboard.html" class="active"><i class="fas fa-trophy"></i> 排行榜</a></li>
+        <li><a href="history.html"><i class="fas fa-history"></i> 历史记录</a></li>
+      </ul>
+    </nav>
+    <div class="user-info" id="userInfo">
+      <div class="avatar" id="userAvatar"></div>
+      <div class="details">
+        <span class="username" id="usernameDisplay"></span>
+        <span class="role" id="userRole"></span>
+      </div>
+      <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="leaderboard-container">
+      <div class="leaderboard-header">
+        <h2><i class="fas fa-trophy"></i> 玩家排行榜</h2>
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="winrate">胜率榜</button>
+          <button class="tab-btn" data-tab="wins">胜场榜</button>
+          <button class="tab-btn" data-tab="position">位置卡榜</button>
+        </div>
+      </div>
+
+      <div class="leaderboard-content">
+        <div class="leaderboard-tab active" id="winrateTab">
+          <div class="leaderboard-table">
+            <div class="table-header">
+              <div class="rank">排名</div>
+              <div class="player">玩家</div>
+              <div class="stats">胜场/败场</div>
+              <div class="winrate">胜率</div>
+            </div>
+            <div class="table-body" id="winrateTable">
+              <!-- 胜率排行榜将通过JavaScript动态加载 -->
+            </div>
+          </div>
+        </div>
+
+        <div class="leaderboard-tab" id="winsTab">
+          <div class="leaderboard-table">
+            <div class="table-header">
+              <div class="rank">排名</div>
+              <div class="player">玩家</div>
+              <div class="stats">胜场</div>
+              <div class="winrate">败场</div>
+            </div>
+            <div class="table-body" id="winsTable">
+              <!-- 胜场排行榜将通过JavaScript动态加载 -->
+            </div>
+          </div>
+        </div>
+
+        <div class="leaderboard-tab" id="positionTab">
+          <div class="leaderboard-table">
+            <div class="table-header">
+              <div class="rank">排名</div>
+              <div class="player">玩家</div>
+              <div class="stats">位置卡</div>
+              <div class="winrate">骰子</div>
+            </div>
+            <div class="table-body" id="positionTable">
+              <!-- 位置卡排行榜将通过JavaScript动态加载 -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="current-player-card" id="currentPlayerCard">
+        <!-- 当前玩家信息将通过JavaScript动态加载 -->
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <p>&copy; 2023 英雄联盟5v5对战平台. 所有权利保留.</p>
+    <div class="social-links">
+      <a href="#"><i class="fab fa-discord"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-github"></i></a>
+    </div>
+  </footer>
+</div>
+
+<script src="js/utils.js"></script>
+<script src="js/websocket.js"></script>
+<script src="js/leaderboard.js"></script>
+</body>
+</html>

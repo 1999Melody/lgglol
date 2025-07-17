@@ -1,0 +1,239 @@
+.leaderboard-container {
+    background-color: var(--background-light);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--box-shadow);
+}
+
+.leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.leaderboard-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.tabs {
+    display: flex;
+    gap: 0.5rem;
+    background-color: var(--background-lighter);
+    border-radius: var(--border-radius);
+    padding: 0.25rem;
+}
+
+.tab-btn {
+    padding: 0.5rem 1rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: calc(var(--border-radius) - 4px);
+    transition: var(--transition);
+}
+
+.tab-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.leaderboard-content {
+    margin-top: 1.5rem;
+}
+
+.leaderboard-tab {
+    display: none;
+}
+
+.leaderboard-tab.active {
+    display: block;
+}
+
+.leaderboard-table {
+    background-color: var(--background-lighter);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 80px 2fr 1fr 1fr;
+    padding: 1rem;
+    background-color: rgba(30, 136, 229, 0.1);
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.leaderboard-row {
+    display: grid;
+    grid-template-columns: 80px 2fr 1fr 1fr;
+    padding: 1rem;
+    align-items: center;
+    transition: var(--transition);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.leaderboard-row:last-child {
+    border-bottom: none;
+}
+
+.leaderboard-row:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.rank {
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.rank-1 {
+    color: gold;
+}
+
+.rank-2 {
+    color: silver;
+}
+
+.rank-3 {
+    color: #cd7f32; /* bronze */
+}
+
+.player {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.player-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--background-light);
+    background-size: cover;
+    background-position: center;
+}
+
+.player-name {
+    font-weight: 600;
+}
+
+.player-role {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.stats, .winrate {
+    text-align: center;
+    font-weight: 600;
+}
+
+.winrate-high {
+    color: #4caf50;
+}
+
+.winrate-medium {
+    color: #ff9800;
+}
+
+.winrate-low {
+    color: #f44336;
+}
+
+.current-player-card {
+    background-color: var(--background-lighter);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: var(--box-shadow);
+}
+
+.current-player-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--background-light);
+    background-size: cover;
+    background-position: center;
+    border: 3px solid var(--primary-color);
+}
+
+.current-player-details {
+    flex: 1;
+}
+
+.current-player-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.current-player-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.current-player-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.current-player-stat .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.current-player-stat .label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .leaderboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .tabs {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .table-header, .leaderboard-row {
+        grid-template-columns: 60px 2fr 1fr 1fr;
+    }
+
+    .current-player-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .current-player-stats {
+        justify-content: center;
+    }
+}

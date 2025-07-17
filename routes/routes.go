@@ -1,0 +1,318 @@
+package routes
+
+import (
+	"lgglol/db"
+	"lgglol/logic"
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
+)
+
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
+func SetupRoutes(router *gin.Engine, g *logic.Global) {
+	// Auth routes
+	auth := router.Group("/api/auth")
+	{
+		auth.POST("/register", func(c *gin.Context) {
+			var req struct {
+				Username string `json:"username"`
+				Password string `json:"password"`
+			}
+			if err := c.ShouldBindJSON(&req); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			player, err := g.Register(req.Username, req.Password)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			c.JSON(http.StatusOK, player)
+		})
+		auth.POST("/login", func(c *gin.Context) {
+			var req struct {
+				Username string `json:"username"`
+				Password string `json:"password"`
+			}
+			if err := c.ShouldBindJSON(&req); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			player, err := g.Login(req.Username, req.Password)
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+				return
+			}
+
+			token, err := logic.GenerateJWT(player.Id)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to generate token"})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{
+				"token":  token,
+				"player": player,
+			})
+		})
+	}
+
+	// Player routes
+	player := router.Group("/api/player")
+	player.GET("/all", func(c *gin.Context) {
+		players := g.GetAllPlayers()
+		c.JSON(http.StatusOK, players)
+	})
+	player.Use(AuthMiddleware(g))
+	{
+		player.POST("/change_role", func(c *gin.Context) {
+			playerID := c.GetInt64("playerID")
+			var req struct {
+				TargetID int32   `json:"target_id"`
+				Role     db.Role `json:"role"`
+			}
+			if err := c.ShouldBindJSON(&req); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			if err := g.ChangeRole(int32(playerID), req.TargetID, req.Role); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{"message": "role changed successfully"})
+		})
+	}
+
+	// Game routes
+	game := router.Group("/api/game")
+	// 获取所有比赛，包括历史记录
+	game.GET("/all", func(c *gin.Context) {
+		games := g.GetAllGames()
+		c.JSON(http.StatusOK, games)
+	})
+	game.Use(AuthMiddleware(g))
+	{
+		game.POST("/create", func(c *gin.Context) {
+			playerID := c.GetInt64("playerID")
+			var req struct {
+				Name string `json:"name"`
+			}
+			if err := c.ShouldBindJSON(&req); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			game, err := g.CreateGame(int32(playerID), req.Name)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			c.JSON(http.StatusOK, game)
+
+		})
+		game.POST("/:game_id/join", func(c *gin.Context) {
+			playerID := c.GetInt64("playerID")
+			gameID, err := getInt32Param(c, "game_id")
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid game ID"})
+				return
+			}
+
+			if err = g.JoinGame(int32(playerID), gameID); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{"message": "joined game successfully"})
+		})
+		game.POST("/leave", func(c *gin.Context) {
+			playerID := c.GetInt64("playerID")
+
+			if err := g.LeaveGame(int32(playerID)); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{"message": "left game successfully"})
+		})
+		game.DELETE("/:game_id/delete", func(c *gin.Context) {
+			playerID := c.GetInt64("playerID")
+			gameID, err := getInt32Param(c, "game_id")
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid game ID"})
+				return
+			}
+
+			if err = g.DeleteGame(int32(playerID), gameID); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{"message": "game deleted successfully"})
+		})
+		// 使用位置卡
+		game.POST("/:game_id/use_position", func(c *gin.Context) {
+			playerID := c.GetInt64("playerID")
+			var req struct {
+				Position db.Position `json:"position"`
+			}
+			if err := c.ShouldBindJSON(&req); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			if err := g.UsePositionCard(int32(playerID), req.Position); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{"message": "position card used successfully"})
+		})
+
+		// 开始ROLL队伍
+		game.POST("/:game_id/roll", func(c *gin.Context) {
+			playerID := c.GetInt64("playerID")
+			gameID, err := getInt32Param(c, "game_id")
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid game ID"})
+				return
+			}
+
+			if err = g.RollTeams(int32(playerID), gameID); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{"message": "teams rolled successfully"})
+		})
+
+		// 重ROLL英雄
+		game.POST("/reroll", func(c *gin.Context) {
+			playerID := c.GetInt64("playerID")
+
+			if err := g.ReRollHero(int32(playerID)); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{"message": "hero rerolled successfully"})
+		})
+
+		// 开始游戏
+		game.POST("/:game_id/start", func(c *gin.Context) {
+			playerID := c.GetInt64("playerID")
+			gameID, err := getInt32Param(c, "game_id")
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid game ID"})
+				return
+			}
+
+			if err = g.StartGame(int32(playerID), gameID); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{"message": "game started successfully"})
+		})
+
+		// 结束游戏并指定胜者
+		game.POST("/:game_id/end", func(c *gin.Context) {
+			playerID := c.GetInt64("playerID")
+			gameID, err := getInt32Param(c, "game_id")
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid game ID"})
+				return
+			}
+
+			var req struct {
+				Winner int32 `json:"winner"` // 1 or 2
+			}
+			if err = c.ShouldBindJSON(&req); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			if err = g.EndGame(int32(playerID), gameID, req.Winner); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{"message": "game ended successfully"})
+		})
+	}
+
+	// WebSocket route
+	router.GET("/ws", func(c *gin.Context) {
+		playerID := c.GetInt64("playerID")
+		conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		g.AddClient(int32(playerID), conn)
+
+		// Send initial data
+		g.SendToPlayer(int32(playerID), "players_update", g.GetAllPlayers())
+		g.SendToPlayer(int32(playerID), "games_update", g.GetAllGames())
+
+		// 不需要单独的处理协程，因为现在由Client.handleConnection管理
+	})
+}
+
+func AuthMiddleware(g *logic.Global) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
+		if authHeader == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "authorization header required"})
+			c.Abort()
+			return
+		}
+
+		// 格式应为 "Bearer <token>"
+		tokenString := authHeader
+		if len(tokenString) > 7 && tokenString[:7] == "Bearer " {
+			tokenString = tokenString[7:]
+		}
+
+		claims, err := logic.ParseJWT(tokenString)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
+			c.Abort()
+			return
+		}
+
+		// 检查玩家是否存在
+		if _, err = g.GetPlayer(claims.PlayerID); err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid player"})
+			c.Abort()
+			return
+		}
+
+		// 使用GetInt64代替GetInt32
+		c.Set("playerID", int64(claims.PlayerID))
+		c.Next()
+	}
+}
+
+// 辅助函数：从路径参数获取int32
+func getInt32Param(c *gin.Context, param string) (int32, error) {
+	val, err := strconv.ParseInt(c.Param(param), 10, 32)
+	if err != nil {
+		return 0, err
+	}
+	return int32(val), nil
+}

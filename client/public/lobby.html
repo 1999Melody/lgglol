@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大厅 - 英雄联盟5v5对战平台</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="js/config.js"></script>
+</head>
+<body>
+<div class="container">
+  <header class="main-header">
+    <div class="logo">
+      <div class="logo-icon"><i class="fas fa-gamepad"></i></div>
+      <h1>英雄联盟5v5对战平台</h1>
+    </div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="lobby.html" class="active"><i class="fas fa-home"></i> 大厅</a></li>
+        <li><a href="leaderboard.html"><i class="fas fa-trophy"></i> 排行榜</a></li>
+        <li><a href="history.html"><i class="fas fa-history"></i> 历史记录</a></li>
+      </ul>
+    </nav>
+    <div class="user-info" id="userInfo">
+      <div class="avatar" id="userAvatar">G</div>
+      <div class="details">
+        <span class="username" id="usernameDisplay">游客</span>
+        <span class="role" id="userRole"></span>
+        <span class="role">未登录</span>
+      </div>
+      <button id="loginBtn" class="login-btn"><i class="fas fa-sign-in-alt"></i> 登录</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="lobby-container">
+      <div class="players-section">
+        <div class="section-header">
+          <h2><i class="fas fa-users"></i> 在线玩家</h2>
+          <div class="search-box">
+            <input type="text" placeholder="搜索玩家..." id="playerSearch">
+            <i class="fas fa-search"></i>
+          </div>
+        </div>
+
+        <div class="players-grid" id="playersGrid">
+          <div class="loading">
+            <div class="loader"></div>
+            <p>加载玩家数据中...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="games-section">
+        <div class="section-header">
+          <h2><i class="fas fa-gamepad"></i> 当前游戏房间</h2>
+          <button id="createGameBtn" class="create-game-btn">
+            <i class="fas fa-plus"></i> 创建房间
+          </button>
+        </div>
+
+        <div class="games-list" id="gamesList">
+          <div class="loading">
+            <div class="loader"></div>
+            <p>加载游戏房间中...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <p>&copy; 2023 英雄联盟5v5对战平台. 所有权利保留.</p>
+    <div class="social-links">
+      <a href="#"><i class="fab fa-discord"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-github"></i></a>
+    </div>
+  </footer>
+</div>
+
+<!-- 登录提示模态框 -->
+<div class="modal" id="loginPromptModal">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h2><i class="fas fa-lock"></i> 需要登录</h2>
+    <p>此操作需要登录账号，请先登录或注册。</p>
+    <div class="modal-buttons">
+      <button class="modal-btn" onclick="window.location.href='auth.html?action=login'">
+        <i class="fas fa-sign-in-alt"></i> 登录
+      </button>
+      <button class="modal-btn" onclick="window.location.href='auth.html?action=register'">
+        <i class="fas fa-user-plus"></i> 注册
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 创建游戏房间的模态框 -->
+<div class="modal" id="createGameModal">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h2>创建新游戏房间</h2>
+    <form id="createGameForm">
+      <div class="form-group">
+        <label for="gameName">房间名称</label>
+        <input type="text" id="gameName" required placeholder="输入房间名称">
+      </div>
+      <button type="submit" class="modal-btn">创建房间</button>
+    </form>
+  </div>
+</div>
+
+<script src="js/utils.js"></script>
+<script src="js/lobby.js"></script>
+</body>
+</html>
