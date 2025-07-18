@@ -65,6 +65,9 @@ function renderHistory(games) {
     const historyList = document.getElementById('historyList');
     if (!historyList) return;
 
+    // 过滤掉未结束的游戏
+    games = games.filter(game => game.status === 'finished');
+
     if (games.length === 0) {
         historyList.innerHTML = `
             <div class="empty-history">
@@ -75,11 +78,9 @@ function renderHistory(games) {
         return;
     }
 
-    const user = JSON.parse(localStorage.getItem('user'));
-
     historyList.innerHTML = games.map(game => {
         const isWinner = game.players.some(p =>
-            p.id === user.id && p.team === game.winner
+            p.id === getMyPlayerId() && p.team === game.winner
         );
 
         return `
@@ -184,7 +185,7 @@ function renderHistory(games) {
 // 显示比赛详情模态框
 async function showGameDetailModal(gameId) {
     try {
-        const response = await fetch(`${AppConfig.API_BASE_URL}/api/game/${gameId}`, {
+        const response = await fetch(`${AppConfig.API_BASE_URL}/api/game/all`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -194,10 +195,11 @@ async function showGameDetailModal(gameId) {
             throw new Error('获取比赛详情失败');
         }
 
-        const game = await response.json();
-        const user = JSON.parse(localStorage.getItem('user'));
+        const games = await response.json();
+
+        const game = games.find(g => g.id === gameId);
         const isWinner = game.players.some(p =>
-            p.id === user.id && p.team === game.winner
+            p.id === getMyPlayerId() && p.team === game.winner
         );
 
         const modal = document.getElementById('gameDetailModal');

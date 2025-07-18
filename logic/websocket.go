@@ -126,7 +126,7 @@ func (c *Client) readPump(g *Global, done chan struct{}) {
 	defer close(done)
 
 	c.conn.SetReadLimit(512) // 限制消息大小
-	c.conn.SetReadDeadline(time.Now().Add(heartbeatTimeout * 2))
+	c.conn.SetReadDeadline(time.Now().Add(heartbeatInterval * 2))
 
 	for {
 		_, message, err := c.conn.ReadMessage()

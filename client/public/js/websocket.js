@@ -55,21 +55,21 @@ function initWebSocket() {
 // 处理WebSocket消息
 function handleWebSocketMessage(message) {
     switch (message.type) {
-        case 'players_update':
-            updatePlayersList(message.data);
-            break;
-        case 'games_update':
-            updateGamesList(message.data);
-            break;
-        case 'player_change':
-            updatePlayerCard(message.data);
-            break;
-        case 'game_change':
-            updateGameCard(message.data);
-            break;
-        case 'game_del':
-            removeGameCard(message.data);
-            break;
+        // case 'players_update':
+        //     updatePlayersList(message.data);
+        //     break;
+        // case 'games_update':
+        //     updateGamesList(message.data);
+        //     break;
+        // case 'player_change':
+        //     updatePlayerCard(message.data);
+        //     break;
+        // case 'game_change':
+        //     updateGameCard(message.data);
+        //     break;
+        // case 'game_del':
+        //     removeGameCard(message.data);
+        //     break;
         case 'notification':
             showNotification(message.data.message, message.data.type);
             break;
